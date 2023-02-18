@@ -15,7 +15,7 @@ class Order(models.Model):
     address = models.TextField(null=1)
     number = models.CharField(null=1, max_length=20)
     order = models.TextField(null=1)
-    notes = models.TextField(null=1)
+    notes = models.TextField(null=1, blank=0)
 
     def __str__(self):
         return self.name
