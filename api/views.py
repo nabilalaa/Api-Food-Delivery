@@ -8,33 +8,37 @@ from rest_framework import status
 
 @api_view(["GET", "POST"])
 def users(request):
-    search = request.GET.get("search")
+    if request.META['REMOTE_ADDR'] == "127.0.0.1":
+        print(request.META['REMOTE_ADDR'])
+        search = request.GET.get("search")
 
-    if search:
-        if User.objects.filter(username__contains=search):
-            serializer = Userserializer(
-                User.objects.filter(username__contains=search), many=True)
+        if search:
+            if User.objects.filter(username__contains=search):
+                serializer = Userserializer(
+                    User.objects.filter(username__contains=search), many=True)
+                return Response(serializer.data)
+            elif User.objects.filter(email__contains=search):
+                serializer = Userserializer(
+                    User.objects.filter(email__contains=search), many=True)
+                return Response(serializer.data)
+
+            else:
+                return Response([])
+
+        if request.method == "GET":
+            users = User.objects.all()
+            serializer = Userserializer(users, many=True)
             return Response(serializer.data)
-        elif User.objects.filter(email__contains=search):
-            serializer = Userserializer(
-                User.objects.filter(email__contains=search), many=True)
-            return Response(serializer.data)
 
-        else:
-            return Response([])
-
-    if request.method == "GET":
-        users = User.objects.all()
-        serializer = Userserializer(users, many=True)
-        return Response(serializer.data)
-
-    if request.method == "POST":
-        serializer = Userserializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+        if request.method == "POST":
+            serializer = Userserializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+    else:
+        print("ss")
 
 
 @api_view(["GET", "PUT", "DELETE"])
