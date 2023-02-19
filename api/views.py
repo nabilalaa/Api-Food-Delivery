@@ -9,7 +9,6 @@ from rest_framework import status
 @api_view(["GET", "POST"])
 def users(request):
     if request.META['REMOTE_ADDR'] == "127.0.0.1":
-        print(request.META['REMOTE_ADDR'])
         search = request.GET.get("search")
 
         if search:
@@ -38,203 +37,228 @@ def users(request):
             else:
                 return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
     else:
-        print("ss")
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET", "PUT", "DELETE"])
 def user_details(request, id):
+    if request.META['REMOTE_ADDR'] == "127.0.0.1":
+        try:
+            user = User.objects.get(pk=id)
 
-    try:
-        user = User.objects.get(pk=id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        if request.method == "GET":
+            serializer = Userserializer(user)
+            return Response(serializer.data)
 
-    if request.method == "GET":
-        serializer = Userserializer(user)
-        return Response(serializer.data)
+        elif request.method == "PUT":
 
-    elif request.method == "PUT":
+            serializer = Userserializer(user, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = Userserializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == "DELETE":
-        user.delete()
-        return Response(data="Done", status=status.HTTP_204_NO_CONTENT)
+        elif request.method == "DELETE":
+            user.delete()
+            return Response(data="Done", status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET", "POST"])
 def category(request):
-    search = request.GET.get("search")
+    if request.META['REMOTE_ADDR'] == "127.0.0.1":
 
-    if search:
-        if Category.objects.filter(nameArabic__contains=search):
-            serializer = Categoryserializer(
-                Category.objects.filter(nameArabic__contains=search), many=True)
+        search = request.GET.get("search")
+
+        if search:
+            if Category.objects.filter(nameArabic__contains=search):
+                serializer = Categoryserializer(
+                    Category.objects.filter(nameArabic__contains=search), many=True)
+                return Response(serializer.data)
+
+            else:
+                return Response([])
+
+        if request.method == "GET":
+            categories = Category.objects.all()
+            serializer = Categoryserializer(categories, many=True)
             return Response(serializer.data)
 
-        else:
-            return Response([])
-
-    if request.method == "GET":
-        categories = Category.objects.all()
-        serializer = Categoryserializer(categories, many=True)
-        return Response(serializer.data)
-
-    if request.method == "POST":
-        serializer = Categoryserializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if request.method == "POST":
+            serializer = Categoryserializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET", "PUT", "DELETE"])
 def category_details(request, id):
+    if request.META['REMOTE_ADDR'] == "127.0.0.1":
 
-    try:
-        category = Category.objects.get(pk=id)
+        try:
+            category = Category.objects.get(pk=id)
 
-    except Category.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        except Category.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == "GET":
-        serializer = Categoryserializer(category)
-        return Response(serializer.data)
+        if request.method == "GET":
+            serializer = Categoryserializer(category)
+            return Response(serializer.data)
 
-    elif request.method == "PUT":
+        elif request.method == "PUT":
 
-        serializer = Categoryserializer(category, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            serializer = Categoryserializer(category, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == "DELETE":
-        category.delete()
-        return Response(data="Done", status=status.HTTP_204_NO_CONTENT)
+        elif request.method == "DELETE":
+            category.delete()
+            return Response(data="Done", status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET", "POST"])
 def order(request):
-    search = request.GET.get("search")
+    if request.META['REMOTE_ADDR'] == "127.0.0.1":
 
-    if search:
-        if Order.objects.filter(name__contains=search):
-            serializer = Orderserializer(
-                Order.objects.filter(name__contains=search), many=True)
+        search = request.GET.get("search")
+
+        if search:
+            if Order.objects.filter(name__contains=search):
+                serializer = Orderserializer(
+                    Order.objects.filter(name__contains=search), many=True)
+                return Response(serializer.data)
+
+            elif Order.objects.filter(address__contains=search):
+                serializer = Orderserializer(
+                    Order.objects.filter(address__contains=search), many=True)
+                return Response(serializer.data)
+
+            elif Order.objects.filter(number__contains=search):
+                serializer = Orderserializer(
+                    Order.objects.filter(number__contains=search), many=True)
+                return Response(serializer.data)
+
+            elif Order.objects.filter(email__contains=search):
+                serializer = Orderserializer(
+                    Order.objects.filter(email__contains=search), many=True)
+                return Response(serializer.data)
+
+            else:
+                return Response([])
+
+        if request.method == "GET":
+            orders = Order.objects.all()
+            serializer = Orderserializer(orders, many=True)
             return Response(serializer.data)
 
-        elif Order.objects.filter(address__contains=search):
-            serializer = Orderserializer(
-                Order.objects.filter(address__contains=search), many=True)
-            return Response(serializer.data)
-
-        elif Order.objects.filter(number__contains=search):
-            serializer = Orderserializer(
-                Order.objects.filter(number__contains=search), many=True)
-            return Response(serializer.data)
-
-        elif Order.objects.filter(email__contains=search):
-            serializer = Orderserializer(
-                Order.objects.filter(email__contains=search), many=True)
-            return Response(serializer.data)
-
-        else:
-            return Response([])
-
-    if request.method == "GET":
-        orders = Order.objects.all()
-        serializer = Orderserializer(orders, many=True)
-        return Response(serializer.data)
-
-    if request.method == "POST":
-        serializer = Orderserializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+        if request.method == "POST":
+            serializer = Orderserializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+    else:
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET", "PUT", "DELETE"])
 def order_details(request, id):
-    try:
-        order = Order.objects.get(pk=id)
+    if request.META['REMOTE_ADDR'] == "127.0.0.1":
 
-    except Order.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        try:
+            order = Order.objects.get(pk=id)
 
-    if request.method == "GET":
-        serializer = Orderserializer(order)
-        return Response(serializer.data)
+        except Order.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-    elif request.method == "PUT":
-        serializer = Orderserializer(order, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+        if request.method == "GET":
+            serializer = Orderserializer(order)
+            return Response(serializer.data)
 
-    elif request.method == "DELETE":
-        order.delete()
-        return Response(data="Done", status=status.HTTP_204_NO_CONTENT)
+        elif request.method == "PUT":
+            serializer = Orderserializer(order, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+
+        elif request.method == "DELETE":
+            order.delete()
+            return Response(data="Done", status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
 
 @ api_view(["GET", "POST"])
 def meal(request):
-    search = request.GET.get("search")
+    if request.META['REMOTE_ADDR'] == "127.0.0.1":
 
-    if search:
-        if Meal.objects.filter(name__contains=search):
-            serializer = Mealserializer(
-                Meal.objects.filter(name__contains=search), many=True)
+        search = request.GET.get("search")
+
+        if search:
+            if Meal.objects.filter(name__contains=search):
+                serializer = Mealserializer(
+                    Meal.objects.filter(name__contains=search), many=True)
+                return Response(serializer.data)
+
+            else:
+                return Response([])
+
+        if request.method == "GET":
+            meals = Meal.objects.all()
+            serializer = Mealserializer(meals, many=True)
             return Response(serializer.data)
 
-        else:
-            return Response([])
-
-    if request.method == "GET":
-        meals = Meal.objects.all()
-        serializer = Mealserializer(meals, many=True)
-        return Response(serializer.data)
-
-    if request.method == "POST":
-        serializer = Mealserializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+        if request.method == "POST":
+            serializer = Mealserializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+    else:
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
 
 @ api_view(["GET", "PUT", "DELETE"])
 def meal_details(request, id):
-    try:
-        meal = Meal.objects.get(pk=id)
+    if request.META['REMOTE_ADDR'] == "127.0.0.1":
 
-    except Meal.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        try:
+            meal = Meal.objects.get(pk=id)
 
-    if request.method == "GET":
-        serializer = Mealserializer(meal)
-        return Response(serializer.data)
+        except Meal.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-    elif request.method == "PUT":
-        print(request.data)
-        serializer = Mealserializer(meal, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+        if request.method == "GET":
+            serializer = Mealserializer(meal)
+            return Response(serializer.data)
 
-    elif request.method == "DELETE":
-        meal.delete()
-        return Response(data="Done", status=status.HTTP_204_NO_CONTENT)
+        elif request.method == "PUT":
+            print(request.data)
+            serializer = Mealserializer(meal, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+
+        elif request.method == "DELETE":
+            meal.delete()
+            return Response(data="Done", status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
