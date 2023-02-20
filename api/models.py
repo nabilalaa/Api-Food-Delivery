@@ -13,7 +13,7 @@ class Order(models.Model):
     name = models.CharField(max_length=80)
     email = models.EmailField(null=1)
     address = models.TextField(null=1)
-    number = models.CharField(null=1, max_length=20)
+    number = models.BigIntegerField(null=1)
     order = models.TextField(null=1)
     notes = models.TextField(null=1, blank=True)
 
