@@ -204,7 +204,7 @@ def meal(request):
 
     if request.method == "GET":
         paginator = PageNumberPagination()
-        paginator.page_size = 3
+        paginator.page_size = 6
 
         meals = Meal.objects.all()
         result_page = paginator.paginate_queryset(meals, request)
