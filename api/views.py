@@ -147,7 +147,7 @@ def order(request):
 
     if request.method == "GET":
         paginator = PageNumberPagination()
-        paginator.page_size = 3
+        paginator.page_size = 6
 
         orders = Order.objects.all()
         result_page = paginator.paginate_queryset(orders, request)
