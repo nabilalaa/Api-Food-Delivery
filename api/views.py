@@ -4,7 +4,6 @@ from .serializers import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
 
 
 @api_view(["GET", "POST"])
@@ -146,14 +145,9 @@ def order(request):
             return Response([])
 
     if request.method == "GET":
-        paginator = PageNumberPagination()
-        paginator.page_size = 6
-
         orders = Order.objects.all()
-        result_page = paginator.paginate_queryset(orders, request)
-
-        serializer = Orderserializer(result_page, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        serializer = Orderserializer(orders, many=True)
+        return Response(serializer.data)
 
     if request.method == "POST":
         serializer = Orderserializer(data=request.data)
@@ -189,7 +183,7 @@ def order_details(request, id):
         return Response(data="Done", status=status.HTTP_204_NO_CONTENT)
 
 
-@ api_view(["GET", "POST"])
+@api_view(["GET", "POST"])
 def meal(request):
     search = request.GET.get("search")
 
@@ -203,14 +197,9 @@ def meal(request):
             return Response([])
 
     if request.method == "GET":
-        paginator = PageNumberPagination()
-        paginator.page_size = 6
-
         meals = Meal.objects.all()
-        result_page = paginator.paginate_queryset(meals, request)
-
-        serializer = Mealserializer(result_page, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        serializer = Mealserializer(meals, many=True)
+        return Response(serializer.data)
 
     if request.method == "POST":
         serializer = Mealserializer(data=request.data)
@@ -221,7 +210,7 @@ def meal(request):
             return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
 
 
-@ api_view(["GET", "PUT", "DELETE"])
+@api_view(["GET", "PUT", "DELETE"])
 def meal_details(request, id):
     try:
         meal = Meal.objects.get(pk=id)
