@@ -82,23 +82,23 @@ WSGI_APPLICATION = 'api_restaurant.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'railway',
-#         'USER': 'postgres',
-#         'PASSWORD': 'nbplEKXChMiFrmQ93IoE',
-#         'HOST': 'containers-us-west-79.railway.app',
-#         'PORT': '7544',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'database_d0f2',
+        'USER': 'database_d0f2_user',
+        'PASSWORD': '4nSf197JErYK50BJdkgJRSLjD8oV8XGB',
+        'HOST': 'dpg-cfrjrv1gp3jo1dr0mh80-a.oregon-postgres.render.com',
+        'PORT': '5432',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
