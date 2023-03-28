@@ -21,7 +21,6 @@ class Orderserializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = "__all__"
-        # extra_kwargs = {'name': {'required': True}}
 
 
 class Mealserializer(serializers.ModelSerializer):
