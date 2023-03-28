@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$!+y14gwn8l-g+cm@il8%9n#nv825id!4yr--wv4y30g)lurs^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
@@ -55,6 +55,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     'corsheaders.middleware.CorsMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+
 
 ]
 
@@ -173,3 +175,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
