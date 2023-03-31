@@ -28,6 +28,8 @@ DEBUG = False
 ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
 
+CSRF_TRUSTED_ORIGINS = ['https://*', "http://*"]
+
 
 # Application definition
 
@@ -84,16 +86,6 @@ WSGI_APPLICATION = 'api_restaurant.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'database_d0f2',
-#         'USER': 'database_d0f2_user',
-#         'PASSWORD': '4nSf197JErYK50BJdkgJRSLjD8oV8XGB',
-#         'HOST': 'dpg-cfrjrv1gp3jo1dr0mh80-a.oregon-postgres.render.com',
-#         'PORT': '5432',
-#     }
-# }
 
 DATABASES = {
     'default': {
@@ -157,18 +149,6 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# REST_FRAMEWORK = {
-
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-#     ]
-# }
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_RENDERER_CLASSES': (
-#         'rest_framework.renderers.<corresponding_renderer>',
-#     )
-# }
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
