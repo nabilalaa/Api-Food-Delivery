@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -146,6 +147,7 @@ CLOUDINARY_STORAGE = {
     'API_KEY': '275415985338552',
     'API_SECRET': 'DKD0v40ucrKTg_y23SC2xNIdSHc'
 }
+
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 

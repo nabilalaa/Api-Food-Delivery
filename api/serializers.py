@@ -1,3 +1,4 @@
+from unicodedata import category
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -23,7 +24,8 @@ class Orderserializer(serializers.ModelSerializer):
 
 
 class Mealserializer(serializers.ModelSerializer):
+    category = serializers.CharField(source="category.nameEnglish")
+
     class Meta:
         model = Meal
         fields = "__all__"
-        extra_kwargs = {'image': {'required': False}}
