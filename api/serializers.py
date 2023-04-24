@@ -24,7 +24,7 @@ class Orderserializer(serializers.ModelSerializer):
 
 
 class Mealserializer(serializers.ModelSerializer):
-    category = serializers.CharField(source="category.nameEnglish")
+    category = serializers.CharField(source="category.nameArabic")
 
     class Meta:
         model = Meal
