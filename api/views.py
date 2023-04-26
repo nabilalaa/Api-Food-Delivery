@@ -4,6 +4,7 @@ from .serializers import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 
 
 @api_view(["GET", "POST"])
@@ -24,9 +25,14 @@ def users(request):
             return Response([])
 
     if request.method == "GET":
+        pagination = PageNumberPagination()
+        pagination.page_size = 6
         users = User.objects.all()
-        serializer = Userserializer(users, many=True)
-        return Response(serializer.data)
+
+        result_page = pagination.paginate_queryset(users, request)
+
+        serializer = Userserializer(result_page, many=True)
+        return pagination.get_paginated_response(serializer.data)
 
     if request.method == "POST":
         serializer = Userserializer(data=request.data)
@@ -197,9 +203,12 @@ def meal(request):
             return Response([])
 
     if request.method == "GET":
+        pagination = PageNumberPagination()
+        pagination.page_size = 6
         meals = Meal.objects.all()
-        serializer = Mealserializer(meals, many=True)
-        return Response(serializer.data)
+        result_page = pagination.paginate_queryset(meals, request)
+        serializer = Mealserializer(result_page, many=True)
+        return pagination.get_paginated_response(serializer.data)
 
     if request.method == "POST":
         serializer = Mealserializer(data=request.data)
